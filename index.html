@@ -20,39 +20,21 @@
   <main class="card">
     <h1>ARMAZÉM <span class="blue">PRO</span></h1>
     <p class="sub">Controle profissional de estoque, entradas, saídas, devoluções, kits e relatórios.</p>
-    <div class="field">
-      <label for="email">E-mail para receber o sistema</label>
-      <input id="email" type="email" placeholder="cliente@email.com" autocomplete="email" required>
-    </div>
     <div class="plans">
       <article class="plan">
-        <h2>Plano mensal</h2><div class="price">R$ 20/mês</div>
-        <button class="btn" onclick="comprar('mensal',this)">Assinar com Mercado Pago</button>
+        <h2>Plano mensal</h2><div class="price">R$ 10/mês</div>
+        <button class="btn" onclick="abrirPagamento('https://mpago.la/1TGVCFW')">Assinar com Mercado Pago</button>
       </article>
       <article class="plan">
-        <h2>Acesso vitalício</h2><div class="price">R$ 200</div>
-        <button class="btn alt" onclick="comprar('vitalicio',this)">Comprar com Mercado Pago</button>
+        <h2>Acesso vitalício</h2><div class="price">R$ 110</div>
+        <button class="btn alt" onclick="abrirPagamento('https://mpago.la/1j8Mw4w')">Comprar com Mercado Pago</button>
       </article>
     </div>
-    <div id="msg" class="msg"></div>
-    <p class="note">Após a aprovação do pagamento, o Mercado Pago avisará automaticamente este site e o cliente receberá por e-mail o link do Armazém Pro.</p>
+    <p class="note">Após a aprovação, o Mercado Pago deverá retornar para a página de acesso ao ARMAZÉM PRO.</p>
   </main>
 <script>
-async function lerResposta(response){
-  const texto=await response.text();
-  try{return JSON.parse(texto)}catch{return {error:`A API retornou uma resposta inválida (${response.status}). Verifique o deploy da pasta api. Resposta: ${texto.slice(0,160)}`}}
-}
-async function comprar(plano,botao){
-  const email=document.getElementById('email').value.trim().toLowerCase();
-  const msg=document.getElementById('msg'); msg.className='msg';
-  if(!/^\S+@\S+\.\S+$/.test(email)){msg.textContent='Informe um e-mail válido.';msg.className='msg show err';return}
-  const original=botao.textContent; botao.disabled=true; botao.textContent='Abrindo pagamento...';
-  try{
-    const response=await fetch('/api/create-preference',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({plano,email})});
-    const data=await lerResposta(response);
-    if(!response.ok||!data.checkout_url)throw new Error(data.error||'Não foi possível iniciar o pagamento.');
-    location.href=data.checkout_url;
-  }catch(error){msg.textContent=error.message;msg.className='msg show err';botao.disabled=false;botao.textContent=original}
+function abrirPagamento(link){
+  window.location.href = link;
 }
 </script>
 </body>
