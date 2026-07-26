@@ -1,5 +1,78 @@
-<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Armazém Pro — Planos</title><style>*{box-sizing:border-box}body{margin:0;font-family:Arial;background:#f4f7fb;color:#172033}.wrap{max-width:1050px;margin:auto;padding:42px 20px}.hero{text-align:center;margin-bottom:30px}h1{font-size:42px;margin:0 0 12px}.sub{font-size:18px;color:#536078}.form{max-width:620px;margin:25px auto;background:#fff;padding:22px;border-radius:16px;box-shadow:0 10px 30px #0001}label{display:block;font-weight:700;margin:12px 0 6px}input{width:100%;padding:13px;border:1px solid #cfd6e4;border-radius:10px;font-size:16px}.plans{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;margin-top:22px}.plan{background:#fff;padding:28px;border-radius:18px;box-shadow:0 10px 30px #0001}.price{font-size:38px;font-weight:800;margin:16px 0}.price small{font-size:16px;color:#65708a}button{width:100%;padding:14px;border:0;border-radius:10px;background:#1769e0;color:#fff;font-size:16px;font-weight:800;cursor:pointer}.vitalicio button{background:#147d4a}button:disabled{opacity:.6}#message{text-align:center;min-height:24px;margin-top:18px;font-weight:700}.note{text-align:center;color:#5e687e;margin-top:25px}@media(max-width:720px){.plans{grid-template-columns:1fr}h1{font-size:32px}}</style></head><body><div class="wrap"><div class="hero"><h1>Armazém Pro</h1><div class="sub">Escolha seu plano e pague com segurança pelo Mercado Pago.</div></div><div class="form"><label for="name">Nome completo</label><input id="name" autocomplete="name" placeholder="Seu nome"><label for="email">E-mail que será usado no sistema</label><input id="email" type="email" autocomplete="email" placeholder="voce@email.com"></div><div class="plans"><section class="plan"><h2>Plano Mensal</h2><p>Cobrança recorrente pelo Mercado Pago.</p><div class="price">R$ 20,00 <small>/mês</small></div><button onclick="abrirPagamento('https://mpago.la/1j8Mw4w')">Pagar R$ 20 pelo Mercado Pago</button></section><section class="plan vitalicio"><h2>Plano Vitalício</h2><p>Pagamento único e acesso sem vencimento.</p><div class="price">R$ 200,00</div><button onclick="abrirPagamento('https://mpago.la/1TGVCFW')">Pagar R$ 200 pelo Mercado Pago</button></section></div><div id="message"></div><p class="note">Após o pagamento, o acesso deverá ser liberado conforme a confirmação recebida do Mercado Pago.</p></div><script>
-function abrirPagamento(link){
-  window.open(link, '_blank', 'noopener,noreferrer');
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Armazém Pro</title>
+  <style>
+    *{box-sizing:border-box} body{margin:0;font-family:Arial,sans-serif;background:#f5f7fb;color:#17202a}
+    .hero{min-height:100vh;display:grid;place-items:center;padding:24px;background:linear-gradient(135deg,#111827,#1f5eff)}
+    .card{width:min(760px,100%);background:#fff;border-radius:22px;padding:34px;box-shadow:0 25px 70px rgba(0,0,0,.28)}
+    h1{margin:0 0 8px;font-size:38px}.blue{color:#1f5eff}.sub{color:#667085;margin-bottom:26px}
+    .field{display:grid;gap:7px;margin-bottom:20px}.field label{font-weight:700}.field input{padding:14px;border:1px solid #d0d5dd;border-radius:10px;font-size:16px}
+    .plans{display:grid;grid-template-columns:1fr 1fr;gap:18px}.plan{border:1px solid #e4e7ec;border-radius:16px;padding:22px}
+    .price{font-size:30px;font-weight:800;margin:8px 0 16px}.btn{width:100%;border:0;border-radius:10px;padding:14px;cursor:pointer;font-weight:800;font-size:15px;background:#1f5eff;color:#fff}
+    .btn.alt{background:#159447}.btn:disabled{opacity:.6;cursor:not-allowed}.msg{margin-top:18px;padding:12px;border-radius:10px;display:none}.msg.show{display:block}.msg.err{background:#fee4e2;color:#912018}.msg.ok{background:#dcfae6;color:#05603a}
+    .note{font-size:13px;color:#667085;margin-top:20px;line-height:1.45}
+    @media(max-width:650px){.plans{grid-template-columns:1fr}h1{font-size:31px}.card{padding:24px}}
+  </style>
+</head>
+<body>
+  <main class="hero">
+    <section class="card">
+      <h1>ARMAZÉM <span class="blue">PRO</span></h1>
+      <p class="sub">Controle profissional de estoque, entradas, saídas, devoluções, kits e relatórios.</p>
+
+      <div class="field">
+        <label for="email">E-mail para receber o sistema</label>
+        <input id="email" type="email" placeholder="cliente@email.com" required>
+      </div>
+
+      <div class="plans">
+        <article class="plan">
+          <h2>Plano mensal</h2>
+          <div class="price">R$ 20/mês</div>
+          <button class="btn" onclick="comprar('mensal',this)">Assinar com Mercado Pago</button>
+        </article>
+        <article class="plan">
+          <h2>Acesso vitalício</h2>
+          <div class="price">R$ 200</div>
+          <button class="btn alt" onclick="comprar('vitalicio',this)">Comprar com Mercado Pago</button>
+        </article>
+      </div>
+
+      <div id="msg" class="msg"></div>
+      <p class="note">Após a aprovação do pagamento, o Mercado Pago avisará automaticamente este site e o cliente receberá por e-mail o link do Armazém Pro.</p>
+    </section>
+  </main>
+
+<script>
+async function comprar(plano, botao){
+  const email=document.getElementById('email').value.trim().toLowerCase();
+  const msg=document.getElementById('msg');
+  msg.className='msg';
+  if(!email || !email.includes('@')){
+    msg.textContent='Informe um e-mail válido para receber o sistema.';
+    msg.className='msg show err';
+    return;
+  }
+  const original=botao.textContent;
+  botao.disabled=true; botao.textContent='Abrindo pagamento...';
+  try{
+    const r=await fetch('/api/create-preference',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({plano,email})
+    });
+    const data=await r.json();
+    if(!r.ok) throw new Error(data.error||'Não foi possível iniciar o pagamento.');
+    window.location.href=data.checkout_url;
+  }catch(err){
+    msg.textContent=err.message;
+    msg.className='msg show err';
+    botao.disabled=false; botao.textContent=original;
+  }
 }
-</script></body></html>
+</script>
+</body>
+</html>
